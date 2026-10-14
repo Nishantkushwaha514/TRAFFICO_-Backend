@@ -2,7 +2,7 @@ const { pool } = require('../config/db.config');
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken'); 
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_default_secret_key_change_me_in_prod'; 
+// The JWT_SECRET definition has been removed, as it will now be read from process.env
 
 // --- 1. SIGN UP Controller Logic (POST /api/auth/register) ---
 const signup = async (req, res) => {
@@ -27,7 +27,8 @@ const signup = async (req, res) => {
         const result = await pool.query(query, values);
         const newUser = result.rows[0];
 
-        const token = jwt.sign({ id: newUser.id }, JWT_SECRET, { expiresIn: '7d' });
+        // *** UPDATED to use process.env.JWT_SECRET and process.env.JWT_EXPIRATION ***
+        const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
 
         return res.status(201).json({ 
             data: {
@@ -73,7 +74,8 @@ const login = async (req, res) => {
             return res.status(403).json({ code: "UNAUTHORIZED", message: 'Account is banned due to policy violation.' });
         }
 
-        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '7d' });
+        // *** UPDATED to use process.env.JWT_SECRET and process.env.JWT_EXPIRATION ***
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
 
         return res.status(200).json({ 
             data: {

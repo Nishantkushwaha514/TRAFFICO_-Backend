@@ -14,4 +14,8 @@ router.post('/', verifyToken, reportController.submitReport); // <-- ADDED verif
 // Future endpoints from Claude's spec will go here:
 // router.get('/:reportId', verifyToken, reportController.getReportDetails); 
 
+// Add this new route to fetch the list of rules
+// 3. GET /api/reports/rules (Does NOT require authentication for configuration data)
+router.get('/rules', reportController.getViolationRules); 
+
 module.exports = router;
